@@ -35,7 +35,6 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     final isLoggedIn = context.watch<AuthProvider>().isLoggedIn;
-    print('isLoggedIn $isLoggedIn');
     return Scaffold(
       body: isLoggedIn
           ? _widgetOptions.elementAt(_selectedIndex)

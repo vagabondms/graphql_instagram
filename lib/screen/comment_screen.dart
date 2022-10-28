@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:graphql_instagram/components/common/user_avatar.dart';
 import 'package:graphql_instagram/constants/assets.dart';
 import 'package:intl/intl.dart';
 
@@ -37,7 +36,7 @@ class CommentScreen extends StatelessWidget {
             left: 0,
             right: 0,
             height: 100,
-            child: _CommentInput(profileUrl: ''), // 로그인된 유저의 profile이 들어가야함.
+            child: _CommentInput(), // 로그인된 유저의 profile이 들어가야함.
           ),
           Column(
             children: [
@@ -144,13 +143,37 @@ class _OriginalPost extends StatelessWidget {
   }
 }
 
-class _CommentInput extends StatelessWidget {
-  final String? profileUrl;
-
+class _CommentInput extends StatefulWidget {
   const _CommentInput({
     Key? key,
-    this.profileUrl,
   }) : super(key: key);
+
+  @override
+  State<_CommentInput> createState() => _CommentInputState();
+}
+
+class _CommentInputState extends State<_CommentInput> {
+  final TextEditingController _controller = TextEditingController();
+
+  bool showPostButton = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(() {
+      if (showPostButton != _controller.text.isNotEmpty) {
+        setState(() {
+          showPostButton = _controller.text.isNotEmpty;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -164,18 +187,23 @@ class _CommentInput extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       child: Row(
         children: [
-          UserAvatar(profileUrl: profileUrl),
-          const SizedBox(width: 10),
           Expanded(
             child: TextField(
+              controller: _controller,
               decoration: InputDecoration(
                 hintText: 'Add a comment...',
                 contentPadding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.grey.shade400),
                   borderRadius: const BorderRadius.all(Radius.circular(50)),
                 ),
+                suffixIcon: showPostButton
+                    ? TextButton(
+                        onPressed: () {},
+                        child: const Text('Post'),
+                      )
+                    : null,
                 border: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.grey.shade400),
                   borderRadius: const BorderRadius.all(Radius.circular(50)),

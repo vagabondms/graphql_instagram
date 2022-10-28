@@ -214,12 +214,12 @@ class _FeedFooter extends StatelessWidget {
       child: Column(
         children: [
           _LikesIndicator(likes: post.likeCount ?? 0),
-          if (post.description != null && post.description!.isEmpty) ...[
+          if (post.description != null && post.description!.isNotEmpty) ...[
             const SizedBox(
               height: 10,
             ),
             _Description(
-              userName: post.user?.nickname ?? '',
+              nickname: post.user?.nickname ?? '',
               description: post.description ?? '',
             ),
           ],
@@ -326,25 +326,36 @@ class _CommentsView extends StatelessWidget {
 
 class _Description extends StatelessWidget {
   final String description;
-  final String userName;
+  final String nickname;
 
   const _Description({
     required this.description,
-    required this.userName,
+    required this.nickname,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text(
-          userName,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        )
-      ],
+    return RichText(
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+      text: TextSpan(
+        children: <TextSpan>[
+          TextSpan(
+              text: nickname ?? '',
+              style: const TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              )),
+          TextSpan(
+            text:
+                ' $description asdlfijasdldifjasdl;ifjssadfsdaadsfsdfasdfsadfdsfasdfasdfdaadssdfa;fijsad;fliasjfl;idsajfil;asfjlsa;difjasdli;',
+            style: const TextStyle(
+              color: Colors.black,
+            ),
+          )
+        ],
+      ),
     );
   }
 }
