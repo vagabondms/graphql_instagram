@@ -5,7 +5,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:graphql_instagram/store/user_provider.dart';
 import "package:http/http.dart" as http;
 
-final URL = Uri.https('c774-114-201-54-135.jp.ngrok.io', 'graphql');
+final URL = Uri.https('59e2-114-201-54-135.jp.ngrok.io', 'graphql');
 
 class Links {
   final String dummyEnv;

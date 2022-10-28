@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gql/language.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:graphql_instagram/models/user.dart';
 import 'package:provider/provider.dart';
 
 import '../graphql/queries/mutations.dart';
@@ -94,10 +93,9 @@ class _LoginFormState extends State<LoginForm> {
 
                     if (accessToken != null && refreshToken != null) {
                       //TODO: change using Provider and Hive Store
-                      context.read<AuthProvider>().logIn(
-                          userInfo: User.fromJson({'id': 1}),
-                          aToken: accessToken,
-                          rToken: refreshToken);
+                      context
+                          .read<AuthProvider>()
+                          .logIn(aToken: accessToken, rToken: refreshToken);
                     }
                   }
                 }),
