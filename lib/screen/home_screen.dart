@@ -24,7 +24,9 @@ class _MainScreenState extends State<MainScreen> {
     SearchScreen(),
     ReelsScreen(),
     ShopScreen(),
-    ProfileScreen(),
+    ProfileScreen(
+      userId: '1',
+    ),
   ];
 
   @override

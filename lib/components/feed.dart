@@ -1,6 +1,8 @@
+import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_instagram/components/common/user_avatar.dart';
 import 'package:graphql_instagram/screen/comment_screen.dart';
+import 'package:graphql_instagram/screen/profile_screen.dart';
 import 'package:intl/intl.dart';
 
 import '../models/comment.dart';
@@ -21,8 +23,8 @@ class Feed extends StatelessWidget {
       child: Column(
         children: <Widget>[
           _FeedHeader(
-            profileUrl: post?.user?.profileImage ?? '',
-            nickname: post?.user?.nickname ?? '',
+            profileUrl: post.user?.profileImage ?? '',
+            nickname: post.user?.nickname ?? '',
           ),
           _FeedBody(
             medias: post.medias ?? [],
@@ -212,6 +214,7 @@ class _FeedFooter extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _LikesIndicator(likes: post.likeCount ?? 0),
           if (post.description != null && post.description!.isNotEmpty) ...[
@@ -219,6 +222,7 @@ class _FeedFooter extends StatelessWidget {
               height: 10,
             ),
             _Description(
+              userId: post.user?.id ?? '',
               nickname: post.user?.nickname ?? '',
               description: post.description ?? '',
             ),
@@ -318,7 +322,7 @@ class _CommentsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Column(
-        children: [],
+        children: const [],
       ),
     );
   }
@@ -327,35 +331,32 @@ class _CommentsView extends StatelessWidget {
 class _Description extends StatelessWidget {
   final String description;
   final String nickname;
+  final String userId;
 
   const _Description({
     required this.description,
     required this.nickname,
     Key? key,
+    required this.userId,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return RichText(
+    return ExpandableText(
+      description,
       maxLines: 2,
-      overflow: TextOverflow.ellipsis,
-      text: TextSpan(
-        children: <TextSpan>[
-          TextSpan(
-              text: nickname ?? '',
-              style: const TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              )),
-          TextSpan(
-            text:
-                ' $description asdlfijasdldifjasdl;ifjssadfsdaadsfsdfasdfsadfdsfasdfasdfdaadssdfa;fijsad;fliasjfl;idsajfil;asfjlsa;difjasdli;',
-            style: const TextStyle(
-              color: Colors.black,
+      expandText: 'more',
+      prefixText: nickname,
+      prefixStyle: const TextStyle(fontWeight: FontWeight.bold),
+      onPrefixTap: () => {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => ProfileScreen(
+              userId: userId,
             ),
-          )
-        ],
-      ),
+          ),
+        )
+      },
     );
   }
 }
@@ -369,7 +370,7 @@ class _TimeInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       child: Text(
         DateFormat.yMMMMd('en_US').format(
@@ -433,6 +434,5 @@ class _Circle extends StatelessWidget {
         ),
       ),
     );
-    ;
   }
 }
