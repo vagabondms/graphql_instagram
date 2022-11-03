@@ -1,20 +1,45 @@
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
-import 'package:graphql_instagram/components/common/user_avatar.dart';
-import 'package:graphql_instagram/screen/comment_screen.dart';
-import 'package:graphql_instagram/screen/profile_screen.dart';
+import 'package:graphql_instagram/screens/comment_screen.dart';
+import 'package:graphql_instagram/screens/profile_screen.dart';
+import 'package:graphql_instagram/widgets/common/user_avatar.dart';
 import 'package:intl/intl.dart';
 
 import '../models/comment.dart';
 import '../models/media.dart';
 import '../models/post.dart';
+import '../models/user.dart';
 
-class Feed extends StatelessWidget {
-  final Post post;
+class Feed extends StatefulWidget {
   const Feed({
-    required this.post,
     Key? key,
+    required this.post,
+    required this.onTapLike,
   }) : super(key: key);
+
+  final Post post;
+  final VoidCallback onTapLike;
+
+  @override
+  State<Feed> createState() => _FeedState();
+}
+
+class _FeedState extends State<Feed> {
+  final PageController pageController = PageController(
+    initialPage: 0,
+  );
+  int _currentPage = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    pageController.addListener(() {
+      setState(() {
+        _currentPage =
+            pageController.page != null ? pageController.page!.toInt() : 0;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,67 +47,95 @@ class Feed extends StatelessWidget {
       elevation: 0,
       child: Column(
         children: <Widget>[
-          _FeedHeader(
-            profileUrl: post.user?.profileImage ?? '',
-            nickname: post.user?.nickname ?? '',
+          // Header
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              _UserInfo(user: widget.post.user!),
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.more_horiz),
+              ),
+            ],
           ),
-          _FeedBody(
-            medias: post.medias ?? [],
+          // Pictures
+          _Pictures(
+            medias: widget.post.medias!,
+            pageController: pageController,
           ),
-          _FeedFooter(post: post),
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              _FeedActions(
+                post: widget.post,
+                onTapLike: widget.onTapLike,
+              ),
+              _Indicator(
+                  number: widget.post.medias!.length,
+                  currentValue: _currentPage),
+            ],
+          ),
+          _FeedFooter(post: widget.post),
         ],
       ),
     );
   }
 }
 
-/// feed 최상단 컴포넌트
-/// 프로필과 닉네임 [_UserInfo]
-class _FeedHeader extends StatelessWidget {
-  final String profileUrl;
-  final String nickname;
-
-  const _FeedHeader({
-    required this.profileUrl,
-    required this.nickname,
+class _UserInfo extends StatelessWidget {
+  const _UserInfo({
     Key? key,
+    required this.user,
   }) : super(key: key);
+
+  final User user;
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        _UserInfo(profileUrl: profileUrl, nickname: nickname),
-        IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.more_horiz),
+      children: [
+        UserAvatar(
+          profileUrl: user.profileImage!,
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        Text(
+          user.nickname!,
         ),
       ],
     );
   }
 }
 
-class _UserInfo extends StatelessWidget {
-  final String profileUrl;
-  final String nickname;
-
-  const _UserInfo({
+class _Pictures extends StatelessWidget {
+  const _Pictures({
     Key? key,
-    required this.profileUrl,
-    required this.nickname,
+    required this.medias,
+    required this.pageController,
   }) : super(key: key);
+
+  final List<Media> medias;
+  final PageController pageController;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        UserAvatar(profileUrl: profileUrl),
-        const SizedBox(
-          width: 10,
-        ),
-        Text(nickname),
-      ],
+    return AspectRatio(
+      aspectRatio: 1 / 1,
+      child: PageView(
+        controller: pageController,
+        children: medias.map((media) {
+          return Container(
+            width: 400,
+            height: 400,
+            color: Colors.blue,
+            child: Image.network(
+              media.url != null ? media.url! : '',
+              fit: BoxFit.fill,
+            ),
+          );
+        }).toList(),
+      ),
     );
   }
 }
@@ -91,72 +144,16 @@ class _UserInfo extends StatelessWidget {
 /// 게시 사진/영상 컴포넌트 [_FeedActions]
 /// 페이지 인디케이터[_Indicator]
 /// Stack으로 조합.
-class _FeedBody extends StatefulWidget {
-  final List<Media> medias;
-
-  const _FeedBody({
-    required this.medias,
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  State<_FeedBody> createState() => _FeedBodyState();
-}
-
-class _FeedBodyState extends State<_FeedBody> {
-  final PageController _pageController = PageController(
-    initialPage: 0,
-  );
-  int _currentPage = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController.addListener(() {
-      setState(() {
-        _currentPage =
-            _pageController.page != null ? _pageController.page!.toInt() : 0;
-      });
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        AspectRatio(
-          aspectRatio: 1 / 1,
-          child: PageView(
-            controller: _pageController,
-            children: widget.medias.map((media) {
-              return Container(
-                width: 400,
-                height: 400,
-                color: Colors.blue,
-                child: Image.network(
-                  media.url != null ? 'https://${media.url}' : '',
-                ),
-              );
-            }).toList(),
-          ),
-        ),
-        Container(
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              const _FeedActions(),
-              _Indicator(
-                  number: widget.medias.length, currentValue: _currentPage),
-            ],
-          ),
-        )
-      ],
-    );
-  }
-}
 
 class _FeedActions extends StatelessWidget {
-  const _FeedActions({Key? key}) : super(key: key);
+  const _FeedActions({
+    Key? key,
+    required this.onTapLike,
+    required this.post,
+  }) : super(key: key);
+
+  final VoidCallback onTapLike;
+  final Post post;
 
   @override
   Widget build(BuildContext context) {
@@ -166,13 +163,19 @@ class _FeedActions extends StatelessWidget {
         Row(
           children: [
             IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.favorite_outline,
+              onPressed: onTapLike,
+              icon: Icon(
+                post.isLike! ? Icons.favorite_rounded : Icons.favorite_outline,
               ),
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => CommentScreen(post: post),
+                  ),
+                );
+              },
               icon: const Icon(
                 Icons.chat_bubble_outline,
               ),
@@ -244,7 +247,7 @@ class _FeedFooter extends StatelessWidget {
             _CommentsView(comments: post.comments ?? []),
           ],
           _TimeInfo(
-            lastModifiedAt: post.lastModifiedAt ?? '',
+            modifiedAt: post.modifiedAt ?? '',
           ),
           const SizedBox(
             height: 10,
@@ -362,9 +365,9 @@ class _Description extends StatelessWidget {
 }
 
 class _TimeInfo extends StatelessWidget {
-  final String lastModifiedAt;
+  final String modifiedAt;
   const _TimeInfo({
-    required this.lastModifiedAt,
+    required this.modifiedAt,
     Key? key,
   }) : super(key: key);
 
@@ -374,7 +377,7 @@ class _TimeInfo extends StatelessWidget {
       width: double.infinity,
       child: Text(
         DateFormat.yMMMMd('en_US').format(
-          DateTime.parse(lastModifiedAt),
+          DateTime.parse(modifiedAt),
         ),
         style: TextStyle(color: Colors.grey.shade600),
       ),

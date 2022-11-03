@@ -1,9 +1,7 @@
 String GET_POSTS = """
-  query getPosts(\$lastId: Int!,\$size: Int!) {
-     getPosts(postPaging: {
-    	  lastId: \$lastId,
-   		  size:\$size,
-     }) {
+  query getPosts(\$pagingInput: PostPagingInput!) {
+     getPosts(postPaging: \$pagingInput) {
+        __typename
         id
         user {
           nickname
@@ -21,7 +19,7 @@ String GET_POSTS = """
           url
         }
         description
-        lastModifiedAt
+        modifiedAt
     }
   }
 """;

@@ -5,7 +5,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:graphql_instagram/store/user_provider.dart';
 import "package:http/http.dart" as http;
 
-final URL = Uri.https('59e2-114-201-54-135.jp.ngrok.io', 'graphql');
+final URL = Uri.https('instagram.test.ggumim.co.kr', 'graphql');
 
 class Links {
   final String dummyEnv;
@@ -19,6 +19,7 @@ class Links {
   static final AuthLink authLink = AuthLink(
     getToken: () async {
       final String? accessToken = UserStore().accessToken;
+
       return accessToken;
     },
     headerKey: "A-TOKEN",
@@ -121,9 +122,6 @@ class LoggerLink extends Link {
     // context 세팅방법 생각해보기 request.context.
 
     Stream<Response> response = forward!(request).map((Response fetchResult) {
-      final ioStreamedResponse =
-          fetchResult.context.entry<HttpLinkResponseContext>();
-
       // 위에서 context setting 해서 받을 수 있는 방법 찾아보기.
       final endTime = DateTime.now().difference(startTime);
 

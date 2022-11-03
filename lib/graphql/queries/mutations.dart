@@ -12,3 +12,15 @@ const String REISSUE = """
     getATokenByRToken
   }
 """;
+
+const String CREATE_LIKE = """
+  mutation createLike(\$likeInput: LikeInput!) {
+    createLike(likeInput: \$likeInput)
+  }
+""";
+
+const String DELETE_LIKE = """
+  mutation deleteLike(\$likeInput: LikeInput!) {
+    deleteLike(likeInput : \$likeInput)
+  }
+""";

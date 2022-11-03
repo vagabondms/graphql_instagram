@@ -1,11 +1,12 @@
 class Media {
+  Media();
+
   int? id;
   MediaType? mediaType;
   String? url;
   int? width;
   int? height;
 
-  Media();
   Media.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         mediaType = json['type'] == "IMAGE" ? MediaType.image : MediaType.video,

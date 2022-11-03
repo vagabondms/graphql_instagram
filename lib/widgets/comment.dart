@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:graphql_instagram/components/common/user_avatar.dart';
+import 'package:graphql_instagram/widgets/common/user_avatar.dart';
 import 'package:intl/intl.dart';
 
 import '../models/comment.dart';
@@ -16,7 +16,7 @@ class CommentItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        UserAvatar(profileUrl: comment.user?.profileImage),
+        UserAvatar(profileUrl: comment.user?.profileImage ?? ''),
         const SizedBox(
           width: 10,
         ),

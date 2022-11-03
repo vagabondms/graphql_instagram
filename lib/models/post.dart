@@ -4,6 +4,22 @@ import 'comment.dart';
 import 'media.dart';
 
 class Post {
+  Post({
+    this.id,
+    this.user,
+    this.isMine,
+    this.isUpdated,
+    this.medias,
+    this.description,
+    this.isLike,
+    this.likeCount,
+    this.likeMembers,
+    this.commentCount,
+    this.comments,
+    this.modifiedAt,
+  });
+
+  final String __typename = "Post";
   String? id;
   User? user;
   bool? isMine;
@@ -15,27 +31,7 @@ class Post {
   List<User>? likeMembers;
   int? commentCount;
   List<Comment>? comments;
-  String? lastModifiedAt;
-
-  Post();
-
-  // Post.fromJson(Map<String, dynamic> json)
-  //     : id = json['id'],
-  //       user = json['user'] ?? User.fromJson(json['user']),
-  //       isMine = json['isMine'],
-  //       isUpdated = json['isUpdated'],
-  //       medias = json['medias'] ?? Media.fromJson(json['medias']),
-  //       description = json['description'],
-  //       isLike = json['isLike'],
-  //       likeCount = json['likeCount'],
-  //       likeMembers = json['likeMembers'] ??
-  //           json['likeMembers'].map<User>((user) {
-  //             print('like $user');
-  //             return User.fromJson(user);
-  //           }),
-  //       commentCount = json['commentCount'],
-  //       comments = json['comments'],
-  //       lastModifiedAt = json['lastModifiedAt'];
+  String? modifiedAt;
 
   Post.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -60,6 +56,39 @@ class Post {
     }
     commentCount = json['commentCount'];
     comments = json['comments'];
-    lastModifiedAt = json['lastModifiedAt'];
+    modifiedAt = json['modifiedAt'];
+  }
+
+  Map<String, dynamic> toJson() => {
+        '__typename': __typename,
+        'id': id,
+        "user": user,
+        "isMine": isMine,
+        "isUpdated": isUpdated,
+        "medias": medias,
+        "description": description,
+        "isLike": isLike,
+        "likeCount": likeCount,
+        "likeMembers": likeMembers,
+        "commentCount": commentCount,
+        "comments": comments,
+        "modifiedAt": modifiedAt,
+      };
+
+  Post fromPost() {
+    return Post(
+      id: id,
+      user: user,
+      isMine: isMine,
+      isUpdated: isUpdated,
+      medias: medias,
+      description: description,
+      isLike: isLike,
+      likeCount: likeCount,
+      likeMembers: likeMembers,
+      commentCount: commentCount,
+      comments: comments,
+      modifiedAt: modifiedAt,
+    );
   }
 }

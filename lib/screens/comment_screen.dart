@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:graphql_instagram/constants/assets.dart';
 import 'package:intl/intl.dart';
 
-import '../components/comment.dart';
 import '../models/comment.dart';
 import '../models/post.dart';
+import '../widgets/comment.dart';
 
 class CommentScreen extends StatelessWidget {
   final Post post;
@@ -96,7 +96,7 @@ class _OriginalPost extends StatelessWidget {
           CircleAvatar(
             backgroundImage: (post.user?.profileImage != null &&
                     post.user!.profileImage!.isNotEmpty
-                ? NetworkImage('https://${post.user!.profileImage!}')
+                ? NetworkImage('${post.user!.profileImage!}')
                 : const AssetImage(DEFAULT_PROFILE) as ImageProvider),
             backgroundColor: Colors.transparent,
           ),
@@ -130,7 +130,7 @@ class _OriginalPost extends StatelessWidget {
                 ),
                 Text(
                   DateFormat.yMMMMd('en_US').format(
-                    DateTime.parse(post.lastModifiedAt ?? ''),
+                    DateTime.parse(post.modifiedAt ?? ''),
                   ),
                   style: TextStyle(color: Colors.grey.shade600),
                 ),

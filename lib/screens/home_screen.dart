@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:graphql_instagram/screen/profile_screen.dart';
-import 'package:graphql_instagram/screen/reels_screen.dart';
-import 'package:graphql_instagram/screen/search_screen.dart';
-import 'package:graphql_instagram/screen/shop_screen.dart';
+import 'package:graphql_instagram/screens/profile_screen.dart';
+import 'package:graphql_instagram/screens/reels_screen.dart';
+import 'package:graphql_instagram/screens/search_screen.dart';
+import 'package:graphql_instagram/screens/shop_screen.dart';
 import 'package:graphql_instagram/store/user_provider.dart';
 import 'package:provider/provider.dart';
 
-import 'feed_screen.dart';
+import 'feed/feed_screen.dart';
 import 'login_screen.dart';
 
 class MainScreen extends StatefulWidget {

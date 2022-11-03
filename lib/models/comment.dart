@@ -1,6 +1,8 @@
 import 'package:graphql_instagram/models/user.dart';
 
 class Comment {
+  Comment();
+
   int? id;
   User? user;
   bool? isMine;
@@ -10,8 +12,6 @@ class Comment {
   List<User>? likeMembers;
   int? subCommentCount;
   String? createdAt;
-
-  Comment();
 
   Comment.fromJson(Map<String, dynamic> json)
       : id = json['id'],

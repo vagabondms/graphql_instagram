@@ -1,6 +1,8 @@
 import 'package:graphql_instagram/models/post.dart';
 
 class User {
+  User();
+
   String? id;
   String? email;
   bool? isMe;
@@ -10,8 +12,6 @@ class User {
   String? quotes;
   String? postCount;
   List<Post>? posts;
-
-  User();
 
   User.fromJson(Map<String, dynamic> json)
       : id = json['id'],
